@@ -1,0 +1,8 @@
+db:
+  host: "localhost"
+  user: "admin"
+  password: "admin1234"
+  name: "hw_db"
+  port: 3306
+
+branch: "staging"

@@ -1,0 +1,34 @@
+name: etl_prefect
+prefect-version: 3.3.6
+
+build:
+  - prefect.deployments.steps.build_docker_image:
+      image_name: etl-prefect-flow
+      tag: latest
+      dockerfile: Dockerfile
+      push: false  # Set to true if pushing to registry
+
+pull:
+  - prefect.deployments.steps.set_working_directory:
+      directory: /opt/prefect/flows
+
+deployments:
+  - name: my-first-etl-flow
+    flow_name: sales-etl-flow
+    entrypoint: etl/sample_etl_mysql.py:sales_etl_flow
+    work_pool:
+      name: docker-pool
+      work_queue_name: default
+    schedule:
+      cron: "*/3 * * * *"
+    tags: ["docker"]
+
+  - name: test-etl
+    flow_name: test-flow
+    entrypoint: etl/etl_test.py:test_flow
+    work_pool:
+      name: docker-pool
+      work_queue_name: default
+    schedule:
+      cron: "*/1 * * * *"
+    tags: ["docker"]

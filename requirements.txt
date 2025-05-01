@@ -1,0 +1,5 @@
+prefect==3.3.6
+pandas
+mysql-connector-python
+PyYAML
+prefect-sqlalchemy

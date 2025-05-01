@@ -1,0 +1,2 @@
+import{d as r,W as n,j as s,c as u,o as p,k as a,l,n as o,dc as m,dd as c}from"./index-DHPxdPUs.js";import{u as _}from"./usePageTitle-N_Vwn3MG.js";const C=r({__name:"WorkPoolQueueCreate",setup(d){const e=n("workPoolName");return _("Create Work Pool Queue"),(k,f)=>{const t=s("p-layout-default");return p(),u(t,null,{header:a(()=>[l(o(c),{"work-pool-name":o(e)},null,8,["work-pool-name"])]),default:a(()=>[l(o(m),{"work-pool-name":o(e)},null,8,["work-pool-name"])]),_:1})}}});export{C as default};
+//# sourceMappingURL=WorkPoolQueueCreate-SogqLPDM.js.map
