@@ -23,7 +23,27 @@ deployments:
   # parameters:
     # env: stagging
   schedule:
-    cron: "*/3 * * * *"
+    cron: "*/5 * * * *"
+
+- name: etl-minio
+  flow_name: flow-etl-minio
+  entrypoint: etl/etl_minio.py:flow_etl_minio
+  work_pool:
+    name: my-etl
+    work_queue_name: default
+  # parameters:
+    # env: stagging
+  schedule:
+    cron: "*/10 * * * *"
+
+- name: my-etl-hw
+  flow_name: etl-hw-flow
+  entrypoint: etl/etl_hw.py:etl_hw_db
+  work_pool:
+    name: my-etl
+    work_queue_name: default
+  schedule:
+    cron: "*/5 * * * *"
 
 - name: test-etl
   flow_name: test-flow

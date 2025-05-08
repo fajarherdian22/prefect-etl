@@ -1,20 +1,28 @@
 from prefect import flow, task, get_run_logger
-from prefect.blocks.system import String
+from prefect.blocks.system import String, JSON
 from prefect_sqlalchemy import SqlAlchemyConnector
 import pandas as pd
 import os
 from datetime import datetime
+from prefect_aws import MinIOCredentials
+
+string_block = String.load("block-name")
+db_block = SqlAlchemyConnector.load("local-db-sqlalchemy")
+json_block = JSON.load("block-json")
+minio_block = MinIOCredentials.load("block-minio")
 
 
 @task
 def extract_sales_data() -> pd.DataFrame:
     logger = get_run_logger()
-
     try:
-        string_block = String.load("block-name")
+
         logger.info(f"String block value: {string_block.value}")
 
-        db_block = SqlAlchemyConnector.load("local-db-sqlalchemy")
+        logger.info(f"JSON block value: {json_block.value}")
+
+        logger.info(f"MinIO Credentials: {minio_block}")
+
         with db_block.get_connection(begin=False) as conn:
             query = "SELECT * FROM sales_outlet_daily"
             df = pd.read_sql(query, con=conn)
@@ -28,9 +36,6 @@ def extract_sales_data() -> pd.DataFrame:
 
 @task
 def transform_data(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Clean column names to lowercase.
-    """
     logger = get_run_logger()
     try:
         logger.info("Transforming data...")
@@ -44,9 +49,6 @@ def transform_data(df: pd.DataFrame) -> pd.DataFrame:
 
 @task
 def load_to_csv(df: pd.DataFrame) -> None:
-    """
-    Export DataFrame to CSV file in 'export/' directory.
-    """
     logger = get_run_logger()
     try:
         os.makedirs("export", exist_ok=True)
@@ -61,9 +63,6 @@ def load_to_csv(df: pd.DataFrame) -> None:
 
 @flow(name="sales-etl-flow")
 def sales_etl_flow() -> None:
-    """
-    Main ETL flow to extract, transform, and load sales data.
-    """
     logger = get_run_logger()
     try:
         logger.info("Starting the ETL flow")
